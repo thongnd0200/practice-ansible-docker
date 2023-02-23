@@ -1,0 +1,25 @@
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     container_name: mysql
+     volumes:
+       - /home/vagrant/mysql/db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: Mypass1!
+       MYSQL_DATABASE: my_database
+       MYSQL_USER: thongnd
+       MYSQL_PASSWORD: Mypass1!
+     ports:
+       - 6603:3306
+   phpmyadmin:
+     image: phpmyadmin/phpmyadmin
+     ports:
+         - '8888:80'
+     environment:
+         - PMA_ARBITRARY=1
+         - PMA_HOST=db
+     depends_on:
+         - db

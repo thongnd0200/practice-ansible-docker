@@ -1,0 +1,33 @@
+---
+
+- name: make build dir
+  file:
+    dest="{{ user_home }}/mysql"
+    owner="{{process_execution_user}}"
+    group="{{process_execution_user}}"
+    state=directory
+
+- name: make data store dir
+  file:
+    dest="/home/vagrant/mysql/db_data"
+    owner="{{process_execution_user}}"
+    group="{{process_execution_user}}"
+    state=directory
+
+- name: copy docker_compose file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{process_execution_user}}"
+    group: "{{process_execution_user}}"
+  with_items:
+    - { src: "docker-compose.yml", dest: "{{ user_home }}/mysql/docker-compose.yml" }
+
+- name: docker-compose restart
+  command: "{{ item }}"
+  args:
+    chdir: "{{ user_home }}/mysql"
+  with_items:
+    - "docker-compose down"
+    - "service docker restart"
+    - "docker-compose up -d"

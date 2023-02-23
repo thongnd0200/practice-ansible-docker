@@ -1,0 +1,12 @@
+user_home: /home/{{ process_execution_user }}
+docker_user:
+  - vagrant
+
+login_to_docker_registry: true
+
+php_version: "7.1.9"
+python_version: "3.6.0"
+docker_version: "17.03"
+docker_compose_version: "1.21.1"
+# app.common
+app_common_hosts: []

@@ -1,0 +1,23 @@
+- hosts:
+    - local_ci
+  remote_user: vagrant
+  connection: local
+  roles:
+    - app.common
+    - geerlingguy.git
+    - geerlingguy.docker
+
+- hosts:
+    - local_app
+  remote_user: vagrant
+  roles:
+    - app.common
+    - geerlingguy.git
+    - geerlingguy.docker
+
+- hosts: all
+  roles:
+    - weareinteractive.docker-compose
+  vars:
+    docker_compose_version: 1.21.0
+    docker_compose_pip_version: pip #pip==9.0.3

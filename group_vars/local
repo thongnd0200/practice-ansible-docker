@@ -1,0 +1,6 @@
+env: local
+process_execution_user: vagrant
+
+user_home: /home/vagrant
+docker_user: vagrant
+build_dir : "{{ user_home }}/build_dir"

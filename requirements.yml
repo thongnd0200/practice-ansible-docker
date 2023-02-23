@@ -1,0 +1,5 @@
+# ansible-galaxy
+- src: geerlingguy.git
+  version: 1.0.4
+- src: geerlingguy.php
+  version: 1.4.3

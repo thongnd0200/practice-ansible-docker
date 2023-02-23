@@ -1,0 +1,83 @@
+---
+
+- name: make app dir
+  file:
+    dest="{{ user_home }}/app"
+    owner="{{process_execution_user}}"
+    group="{{process_execution_user}}"
+    state=directory
+
+- name: copy docker_compose file
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{process_execution_user}}"
+    group: "{{process_execution_user}}"
+  with_items:
+    - { src: "docker-compose.yml", dest: "{{ user_home }}/app/docker-compose.yml" }
+
+- name: make php-fpm dir
+  file:
+    dest="{{ item.dest }}"
+    owner="{{process_execution_user}}"
+    group="{{process_execution_user}}"
+    state=directory
+  with_items:
+    - { dest: "{{ user_home }}/app/php-fpm" }
+    - { dest: "{{ user_home }}/app/config" }
+    - { dest: "{{ user_home }}/app/log" }
+
+- name: copy php-fpm files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{process_execution_user}}"
+    group: "{{process_execution_user}}"
+  with_items:
+    - { src: "php-fpm/Dockerfile", dest: "{{ user_home }}/app/php-fpm/" }
+    # - { src: "php-fpm/config/php-fpm.conf", dest: "{{ user_home }}/app/php-fpm/config/" }
+    # - { src: "php-fpm/config/conf.j2", dest: "{{ user_home }}/app/php-fpm/config/www.conf" }
+
+- name: make nginx dir
+  file:
+    dest="{{ item.dest }}"
+    owner="{{process_execution_user}}"
+    group="{{process_execution_user}}"
+    state=directory
+  with_items:
+    - { dest: "{{ user_home }}/app/nginx" }
+    - { dest: "{{ user_home }}/app/nginx/conf.d" }
+
+- name: copy nginx files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{process_execution_user}}"
+    group: "{{process_execution_user}}"
+  with_items:
+    - { src: "nginx/Dockerfile", dest: "{{ user_home }}/app/nginx/" }
+    - { src: "nginx/conf.d/test.conf", dest: "{{ user_home }}/app/nginx/conf.d/" }
+
+- name: make code dir
+  file:
+    dest="/usr/share/code"
+    owner="root"
+    group="root"
+    state=directory
+
+- name: copy php-fpm config files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "root"
+    group: "root"
+  with_items:
+    - { src: "code/index.php", dest: "/usr/share/code/" }
+
+- name: docker-compose restart
+  command: "{{ item }}"
+  args:
+    chdir: "{{ user_home }}/app"
+  with_items:
+    - "docker-compose down"
+    - "docker-compose up -d"

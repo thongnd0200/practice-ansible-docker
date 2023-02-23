@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+ php-fpm:
+   build: ./php-fpm
+   container_name: php-fpm
+   restart: always
+   volumes:
+     - {{ user_home }}/ansible-playbook/yii2-project:/code
+     # - ./php-fpm/log:/log
+     # - ./php-fpm/config/php-fpm.conf:/usr/local/etc/php-fpm.conf
+     # - ./php-fpm/config/www.conf:/usr/local/etc/php-fpm.d/www.conf
+ nginx:
+   build: ./nginx
+   container_name: nginx
+   restart: always
+   ports:
+     - "80:80"
+   volumes:
+     - ./nginx/conf.d:/etc/nginx/conf.d
+     - {{ user_home }}/ansible-playbook/yii2-project:/code
+   links:
+     - php-fpm

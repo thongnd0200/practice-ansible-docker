@@ -1,0 +1,44 @@
+
+env: local
+yii_env: dev
+process_execution_user: vagrant
+
+app_common_hosts:
+  - { ip_address: "192.168.33.50", hostname: "kubernetes-master" }
+  - { ip_address: "192.168.33.51", hostname: "kubernetes-minion-1" }
+  - { ip_address: "192.168.33.52", hostname: "kubernetes-minion-2" }
+  - { ip_address: "192.168.33.53", hostname: "frontend.local" }
+
+registry_address: "{{ groups.local_registry[0] }}"
+registry_user: oneid
+registry_pass: ENj8h2Jnv0pOksnB63
+
+elasticsearch_network_mode: host
+elasticsearch_network_host: "_enp0s8:ipv4_"
+elasticsearch_hosts: "{{ groups.local_es }}"
+
+yii_source_path: /home/{{ process_execution_user }}/ansible-playbook/gmopoint
+yii_backend_path: /home/{{ process_execution_user }}/ansible-playbook/gmopoint
+
+fluentd_log_aggregator_host: "{{ groups.local_log_aggregator[0] }}"
+
+frontend_host_name: frontend.local
+backend_host_name: backend.local
+backend_basic:
+  - {name: "staff", pass: "$apr1$titmqAMt$4m32cCxhDtWjxWs90mpXC0"}
+  - {name: "dev", pass: "$apr1$DmVEuvVY$xzRnNF2wiZixH6SwZIxzL1"}
+  - {name: "biz", pass: "$apr1$.5a9oIVs$GaF1/iIjAM3Vqn4A7LPF70"}
+
+rancher_name: rancher_server
+rancher_repo: rancher
+rancher_version: v2.0.0
+rancher_k8s_version: v1.10.1-rancher2
+etcd_version: v3.1.12
+
+ranchar_nodes:
+  - { ip: "192.168.33.50", roles: "controlplane, etcd", label: "master"}
+  - { ip: "192.168.33.51", roles: "worker", label: "worker"}
+
+frontend_replicas: 1
+frontend_label_value: worker
+use_frontend_ingress: True
